@@ -9,12 +9,14 @@ public class SaveStudentOrder {
         return answer;
     }
 
-    static StudentOrder buildStudentOrder() {
+    static StudentOrder buildStudentOrder(long id) {
         StudentOrder order = new StudentOrder();
 
         Adult husband = new Adult();
-        order.setHusband(husband);
         Adult wife = new Adult();
+
+        order.setStudentOrderId(id);
+        order.setHusband(husband);
         order.setWife(wife);
 
         return order;

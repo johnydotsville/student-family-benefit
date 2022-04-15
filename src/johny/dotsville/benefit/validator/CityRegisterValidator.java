@@ -8,7 +8,7 @@ public class CityRegisterValidator {
     public int port;
 
     public AnswerCityRegister checkCityRegister(StudentOrder studentOrder) {
-        System.out.println("Запрос регистрации по адресу " + hostName);
+        System.out.println("Запрос регистрации по адресу " + hostName + "...");
         AnswerCityRegister answer = new AnswerCityRegister();
         answer.success = false;
 

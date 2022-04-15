@@ -20,6 +20,7 @@ public class StudentOrderValidator {
         studentValidator = new StudentValidator();
         cityRegisterValidator = new CityRegisterValidator();
         cityRegisterValidator.hostName = "Московский сервер";
+        mailSender = new MailSender();
     }
 
     public static void main(String[] args) {
@@ -51,32 +52,35 @@ public class StudentOrderValidator {
         return answer;
     }
 
-    static StudentOrder readStudentOrder() {
-        return new StudentOrder();
-    }
-
     void sendMail(StudentOrder studentOrder) {
         mailSender.sendMail(studentOrder);
     }
 
     public void checkAll() {
-        while (true) {
-            StudentOrder studentOrder = readStudentOrder();
+        StudentOrder[] studentOrders = readStudentOrders();
 
-            if (studentOrder == null) {
-                break;
-            }
-
-            AnswerCityRegister cityAnswer = checkCityRegister(studentOrder);
-            if (!cityAnswer.success) {
-                continue;
-            }
-
-            AnswerWedding weddingAnswer = checkWedding(studentOrder);
-            AnswerChildren childrenAnswer = checkChildren(studentOrder);
-            AnswerStudent studentAnswer = checkStudent(studentOrder);
-
-            sendMail(studentOrder);
+        for (StudentOrder order : studentOrders) {
+            System.out.println("Запуск проверки заявки");
+            checkOneOrder(order);
+            System.out.println();
         }
+    }
+
+    static StudentOrder[] readStudentOrders() {
+        StudentOrder[] orders = new StudentOrder[3];
+
+        for (int i = 0; i < orders.length; i++) {
+            orders[i] = SaveStudentOrder.buildStudentOrder(i);
+        }
+
+        return orders;
+    }
+
+    public void checkOneOrder(StudentOrder studentOrder) {
+        AnswerCityRegister cityAnswer = checkCityRegister(studentOrder);
+        AnswerWedding weddingAnswer = checkWedding(studentOrder);
+        AnswerChildren childrenAnswer = checkChildren(studentOrder);
+        AnswerStudent studentAnswer = checkStudent(studentOrder);
+        sendMail(studentOrder);
     }
 }
