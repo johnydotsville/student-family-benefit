@@ -10,6 +10,10 @@ public class Adult extends Person {
     private String university;
     private String studentId;
 
+    public Adult(String surname, String givenName, String patronymic, LocalDate dateOfBirth) {
+        super(surname, givenName, patronymic, dateOfBirth);
+    }
+
     public String getPassportSeria() {
         return passportSeria;
     }

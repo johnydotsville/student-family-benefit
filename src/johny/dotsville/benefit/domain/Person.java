@@ -9,6 +9,13 @@ public abstract class Person {
     private LocalDate dateOfBirth;
     private Address address;
 
+    public Person(String surname, String givenName, String patronymic, LocalDate dateOfBirth) {
+        this.surname = surname;
+        this.givenName = givenName;
+        this.patronymic = patronymic;
+        this.dateOfBirth = dateOfBirth;
+    }
+
     public String getSurname() {
         return surname;
     }
