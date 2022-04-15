@@ -15,15 +15,24 @@ public class StudentOrderValidator {
     }
 
     static AnswerWedding checkWedding(StudentOrder studentOrder) {
-        return new AnswerWedding();
+        WeddingValidator validator = new WeddingValidator();
+        AnswerWedding answer = validator.checkWedding(studentOrder);
+
+        return answer;
     }
 
     static AnswerChildren checkChildren(StudentOrder studentOrder) {
-        return new AnswerChildren();
+        ChildrenValidator validator = new ChildrenValidator();
+        AnswerChildren answer = validator.checkChildren(studentOrder);
+
+        return answer;
     }
 
     static AnswerStudent checkStudent(StudentOrder studentOrder) {
-        return new AnswerStudent();
+        StudentValidator validator = new StudentValidator();
+        AnswerStudent answer = validator.checkStudent(studentOrder);
+
+        return answer;
     }
 
     static StudentOrder readStudentOrder() {
@@ -31,7 +40,8 @@ public class StudentOrderValidator {
     }
 
     static void sendMail(StudentOrder studentOrder) {
-
+        MailSender mailer = new MailSender();
+        mailer.sendMail(studentOrder);
     }
 
     static void checkAll() {
