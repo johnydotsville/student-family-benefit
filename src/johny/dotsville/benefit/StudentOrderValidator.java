@@ -8,41 +8,45 @@ import johny.dotsville.benefit.validator.WeddingValidator;
 import johny.dotsville.benefit.mail.MailSender;
 
 public class StudentOrderValidator {
+    private WeddingValidator weddingValidator;
+    private ChildrenValidator childrenValidator;
+    private StudentValidator studentValidator;
+    private CityRegisterValidator cityRegisterValidator;
+    private MailSender mailSender;
+
+    public StudentOrderValidator() {
+        weddingValidator = new WeddingValidator();
+        childrenValidator = new ChildrenValidator();
+        studentValidator = new StudentValidator();
+        cityRegisterValidator = new CityRegisterValidator();
+        cityRegisterValidator.hostName = "Московский сервер";
+    }
 
     public static void main(String[] args) {
         System.out.println("Программа выплат пособий родителям-студентам");
-        StudentOrderValidator.checkAll();
+        new StudentOrderValidator().checkAll();
     }
 
-    static AnswerCityRegister checkCityRegister(StudentOrder studentOrder) {
-        CityRegisterValidator validator1 = new CityRegisterValidator();
-        validator1.hostName = "Московский сервер";
-        CityRegisterValidator validator2 = new CityRegisterValidator();
-        validator2.hostName = "Питерский сервер";
-
-        AnswerCityRegister answer1 = validator1.checkCityRegister(studentOrder);
-        AnswerCityRegister answer2 = validator2.checkCityRegister(studentOrder);
-
-        return answer1;
-    }
-
-    static AnswerWedding checkWedding(StudentOrder studentOrder) {
-        WeddingValidator validator = new WeddingValidator();
-        AnswerWedding answer = validator.checkWedding(studentOrder);
+    AnswerCityRegister checkCityRegister(StudentOrder studentOrder) {
+        AnswerCityRegister answer = cityRegisterValidator.checkCityRegister(studentOrder);
 
         return answer;
     }
 
-    static AnswerChildren checkChildren(StudentOrder studentOrder) {
-        ChildrenValidator validator = new ChildrenValidator();
-        AnswerChildren answer = validator.checkChildren(studentOrder);
+    AnswerWedding checkWedding(StudentOrder studentOrder) {
+        AnswerWedding answer = weddingValidator.checkWedding(studentOrder);
 
         return answer;
     }
 
-    static AnswerStudent checkStudent(StudentOrder studentOrder) {
-        StudentValidator validator = new StudentValidator();
-        AnswerStudent answer = validator.checkStudent(studentOrder);
+    AnswerChildren checkChildren(StudentOrder studentOrder) {
+        AnswerChildren answer = childrenValidator.checkChildren(studentOrder);
+
+        return answer;
+    }
+
+    AnswerStudent checkStudent(StudentOrder studentOrder) {
+        AnswerStudent answer = studentValidator.checkStudent(studentOrder);
 
         return answer;
     }
@@ -51,12 +55,11 @@ public class StudentOrderValidator {
         return new StudentOrder();
     }
 
-    static void sendMail(StudentOrder studentOrder) {
-        MailSender mailer = new MailSender();
-        mailer.sendMail(studentOrder);
+    void sendMail(StudentOrder studentOrder) {
+        mailSender.sendMail(studentOrder);
     }
 
-    public static void checkAll() {
+    public void checkAll() {
         while (true) {
             StudentOrder studentOrder = readStudentOrder();
 
