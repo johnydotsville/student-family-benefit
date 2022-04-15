@@ -9,6 +9,11 @@ import johny.dotsville.benefit.mail.MailSender;
 
 public class StudentOrderValidator {
 
+    public static void main(String[] args) {
+        System.out.println("Программа выплат пособий родителям-студентам");
+        StudentOrderValidator.checkAll();
+    }
+
     static AnswerCityRegister checkCityRegister(StudentOrder studentOrder) {
         CityRegisterValidator validator1 = new CityRegisterValidator();
         validator1.hostName = "Московский сервер";
