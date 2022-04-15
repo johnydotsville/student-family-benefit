@@ -1,4 +1,6 @@
-package johny.dotsville;
+package johny.dotsville.benefit;
+
+import johny.dotsville.benefit.StudentOrderValidator;
 
 public class Main {
 

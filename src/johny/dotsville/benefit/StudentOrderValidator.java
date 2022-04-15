@@ -1,4 +1,11 @@
-package johny.dotsville;
+package johny.dotsville.benefit;
+
+import johny.dotsville.benefit.domain.*;
+import johny.dotsville.benefit.validator.ChildrenValidator;
+import johny.dotsville.benefit.validator.CityRegisterValidator;
+import johny.dotsville.benefit.validator.StudentValidator;
+import johny.dotsville.benefit.validator.WeddingValidator;
+import johny.dotsville.benefit.mail.MailSender;
 
 public class StudentOrderValidator {
 
@@ -44,7 +51,7 @@ public class StudentOrderValidator {
         mailer.sendMail(studentOrder);
     }
 
-    static void checkAll() {
+    public static void checkAll() {
         while (true) {
             StudentOrder studentOrder = readStudentOrder();
 

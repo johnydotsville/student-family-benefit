@@ -1,4 +1,4 @@
-package johny.dotsville;
+package johny.dotsville.benefit.domain;
 
 public class StudentOrder {
     String husbandFirstName;
