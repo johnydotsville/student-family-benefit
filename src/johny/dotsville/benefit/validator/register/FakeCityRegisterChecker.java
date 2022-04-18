@@ -1,6 +1,6 @@
 package johny.dotsville.benefit.validator.register;
 
-import johny.dotsville.benefit.domain.CityRegisterCheckerResponse;
+import johny.dotsville.benefit.domain.register.CityRegisterResponse;
 import johny.dotsville.benefit.domain.Person;
 import johny.dotsville.benefit.exception.CityRegisterException;
 import johny.dotsville.benefit.domain.Adult;
@@ -14,9 +14,9 @@ public class FakeCityRegisterChecker implements CityRegisterChecker {
     private static final String ERROR_1 = "1002";
     private static final String ERROR_2 = "2002";
 
-    public CityRegisterCheckerResponse checkPerson(Person person)
+    public CityRegisterResponse checkPerson(Person person)
             throws CityRegisterException {
-        CityRegisterCheckerResponse response = new CityRegisterCheckerResponse();
+        CityRegisterResponse response = new CityRegisterResponse();
         if (person instanceof Adult) {
             Adult adult = (Adult)person;
             String passportSeria = adult.getPassportSeria();

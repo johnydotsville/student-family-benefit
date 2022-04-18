@@ -1,6 +1,6 @@
 package johny.dotsville.benefit.validator.register;
 
-import johny.dotsville.benefit.domain.AnswerCityRegister;
+import johny.dotsville.benefit.domain.register.AnswerCityRegister;
 import johny.dotsville.benefit.domain.StudentOrder;
 import johny.dotsville.benefit.exception.CityRegisterException;
 import johny.dotsville.benefit.domain.Child;

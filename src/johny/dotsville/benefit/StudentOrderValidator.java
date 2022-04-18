@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.LinkedList;
 
 import johny.dotsville.benefit.domain.*;
+import johny.dotsville.benefit.domain.register.AnswerCityRegister;
 import johny.dotsville.benefit.validator.ChildrenValidator;
 import johny.dotsville.benefit.validator.register.CityRegisterValidator;
 import johny.dotsville.benefit.validator.StudentValidator;

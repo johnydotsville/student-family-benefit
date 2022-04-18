@@ -1,9 +1,9 @@
-package johny.dotsville.benefit.domain;
+package johny.dotsville.benefit.domain.register;
 
 /*
 Результат проверки ОДНОГО человека из заявки
  */
-public class CityRegisterCheckerResponse {
+public class CityRegisterResponse {
     private boolean existing;  // Существует ли человек в системе
     private Boolean temporal;  // Временная или постоянная регистрация
 
