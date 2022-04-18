@@ -2,6 +2,7 @@ package johny.dotsville.benefit.validator;
 
 import johny.dotsville.benefit.domain.AnswerCityRegister;
 import johny.dotsville.benefit.domain.StudentOrder;
+import johny.dotsville.benefit.exception.CityRegisterException;
 
 /*
 Проверяет регистрацию в городе
@@ -19,12 +20,16 @@ public class CityRegisterValidator {
     public AnswerCityRegister checkCityRegister(StudentOrder studentOrder) {
         System.out.println("Запрос регистрации по адресу " + hostName + "...");
 
-        personChecker.checkPerson(studentOrder.getHusband());
-        personChecker.checkPerson(studentOrder.getWife());
-        personChecker.checkPerson(studentOrder.getChild());
+        try {
+            personChecker.checkPerson(studentOrder.getHusband());
+            personChecker.checkPerson(studentOrder.getWife());
+            personChecker.checkPerson(studentOrder.getChild());
+        } catch (CityRegisterException ex) {
+            ex.printStackTrace();
+        }
 
         AnswerCityRegister answer = new AnswerCityRegister();
-        answer.success = false;
+        //answer.success = false;
 
         return answer;
     }
