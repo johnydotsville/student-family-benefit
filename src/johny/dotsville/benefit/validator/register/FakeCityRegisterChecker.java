@@ -31,7 +31,7 @@ public class FakeCityRegisterChecker implements CityRegisterChecker {
             if (passportSeria.equals(BAD_1) || passportSeria.equals(BAD_2)) {
                 response.setExisting(false);
             }
-            if (passportSeria.equals(ERROR_2) || passportSeria.equals(ERROR_2)) {
+            if (passportSeria.equals(ERROR_1) || passportSeria.equals(ERROR_2)) {
                 throw new CityRegisterException("1", "GRN ERROR");
             }
             if (passportSeria.equals(ERROR_TRANSPORT_1) || passportSeria.equals(ERROR_TRANSPORT_2)) {

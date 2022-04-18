@@ -48,5 +48,6 @@ public class AnswerCityRegisterItem {
         }
     }
 
+    // Имхо тут логичнее было бы REGISTERED, UNREGISTERED вместо YES, NO
     public enum CityStatus { YES, NO, ERROR }
 }
