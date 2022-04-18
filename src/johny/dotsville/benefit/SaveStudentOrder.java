@@ -1,7 +1,11 @@
 package johny.dotsville.benefit;
 
+import java.time.LocalDate;
+
 import johny.dotsville.benefit.domain.StudentOrder;
 import johny.dotsville.benefit.domain.Adult;
+import johny.dotsville.benefit.domain.Address;
+import johny.dotsville.benefit.domain.Child;
 
 public class SaveStudentOrder {
     static long saveStudentOrder(StudentOrder studentOrder) {
@@ -11,13 +15,41 @@ public class SaveStudentOrder {
 
     static StudentOrder buildStudentOrder(long id) {
         StudentOrder order = new StudentOrder();
-
-        Adult husband = new Adult("Пахомов", "Сергей", "Игоревич", null);
-        Adult wife = new Adult("Баскова", "Светлана", "Юрьевна", null);
-
         order.setStudentOrderId(id);
+        order.setMarriageCertificateId("" + (123456000 + id));
+        order.setMarriageDate(LocalDate.of(2016, 7, 4));
+        order.setMarriageOffice("Отдел ЗАГС");
+
+        Address address = new Address("195000", "Заневский пр.", "12", "", "142");
+
+        // Муж
+        Adult husband = new Adult("Петров", "Виктор", "Сергеевич", LocalDate.of(1997, 8, 24));
+        husband.setPassportSeria("" + (1000 + id));
+        husband.setPassportNumber("" + (100000 + id));
+        husband.setIssueDate(LocalDate.of(2017, 9, 15));
+        husband.setIssueDepartment("Отдел милиции №" + id);
+        husband.setStudentId("" + (100000 + id));
+        husband.setAddress(address);
+
+        // Жена
+        Adult wife = new Adult("Петрова", "Вероника", "Алекссевна", LocalDate.of(1998, 3, 12));
+        wife.setPassportSeria("" + (2000 + id));
+        wife.setPassportNumber("" + (200000 + id));
+        wife.setIssueDate(LocalDate.of(2018, 4, 5));
+        wife.setIssueDepartment("Отдел милиции №" + id);
+        wife.setStudentId("" + (200000 + id));
+        wife.setAddress(address);
+
+        // Ребенок
+        Child child = new Child("Петрова", "Ирина", "Викторовна", LocalDate.of(2018, 6, 29));
+        child.setCertificateNumber("" + (300000 + id));
+        child.setIssueDate(LocalDate.of(2018, 7, 19));
+        child.setIssueDepartment("ОТдел ЗАГС №" + id);
+        child.setAddress(address);
+
         order.setHusband(husband);
         order.setWife(wife);
+        order.setChild(child);
 
         return order;
     }
