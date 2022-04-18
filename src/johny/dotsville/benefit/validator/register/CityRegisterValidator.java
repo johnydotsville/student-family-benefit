@@ -3,6 +3,7 @@ package johny.dotsville.benefit.validator.register;
 import johny.dotsville.benefit.domain.AnswerCityRegister;
 import johny.dotsville.benefit.domain.StudentOrder;
 import johny.dotsville.benefit.exception.CityRegisterException;
+import johny.dotsville.benefit.domain.Child;
 
 /*
 Проверяет регистрацию в городе
@@ -17,13 +18,15 @@ public class CityRegisterValidator {
         personChecker = new FakeCityRegisterChecker();
     }
 
-    public AnswerCityRegister checkCityRegister(StudentOrder studentOrder) {
+    public AnswerCityRegister checkCityRegister(StudentOrder order) {
         System.out.println("Запрос регистрации по адресу " + hostName + "...");
 
         try {
-            personChecker.checkPerson(studentOrder.getHusband());
-            personChecker.checkPerson(studentOrder.getWife());
-            personChecker.checkPerson(studentOrder.getChild());
+            personChecker.checkPerson(order.getHusband());
+            personChecker.checkPerson(order.getWife());
+            for (Child child :  order.getChildren()) {
+                personChecker.checkPerson(child);
+            }
         } catch (CityRegisterException ex) {
             ex.printStackTrace(System.out);
         }

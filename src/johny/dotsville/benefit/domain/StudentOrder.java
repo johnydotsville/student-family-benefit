@@ -1,12 +1,14 @@
 package johny.dotsville.benefit.domain;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.ArrayList;
 
 public class StudentOrder {
     private long studentOrderId;
     private Adult husband;
     private Adult wife;
-    private Child child;
+    private List<Child> children;
     private String marriageCertificateId;
     private LocalDate marriageDate;
     private String marriageOffice;
@@ -35,12 +37,15 @@ public class StudentOrder {
         this.wife = wife;
     }
 
-    public Child getChild() {
-        return child;
+    public void addChild(Child child) {
+        if (children == null) {
+            children = new ArrayList<Child>(2);
+        }
+        children.add(child);
     }
 
-    public void setChild(Child child) {
-        this.child = child;
+    public List<Child> getChildren() {
+        return children;
     }
 
     public String getMarriageCertificateId() {
