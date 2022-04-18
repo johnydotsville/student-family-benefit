@@ -1,5 +1,8 @@
 package johny.dotsville.benefit;
 
+import java.util.List;
+import java.util.LinkedList;
+
 import johny.dotsville.benefit.domain.*;
 import johny.dotsville.benefit.validator.ChildrenValidator;
 import johny.dotsville.benefit.validator.register.CityRegisterValidator;
@@ -57,7 +60,7 @@ public class StudentOrderValidator {
     }
 
     public void checkAll() {
-        StudentOrder[] studentOrders = readStudentOrders();
+        List<StudentOrder> studentOrders = readStudentOrders();
 
         for (StudentOrder order : studentOrders) {
             System.out.println("Запуск проверки заявки");
@@ -66,11 +69,11 @@ public class StudentOrderValidator {
         }
     }
 
-    static StudentOrder[] readStudentOrders() {
-        StudentOrder[] orders = new StudentOrder[3];
+    static List<StudentOrder> readStudentOrders() {
+        List<StudentOrder> orders = new LinkedList<>();
 
-        for (int i = 0; i < orders.length; i++) {
-            orders[i] = SaveStudentOrder.buildStudentOrder(i);
+        for (int i = 0; i < 5; i++) {
+            orders.add(SaveStudentOrder.buildStudentOrder(i));
         }
 
         return orders;
