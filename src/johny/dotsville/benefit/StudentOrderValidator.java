@@ -2,7 +2,7 @@ package johny.dotsville.benefit;
 
 import johny.dotsville.benefit.domain.*;
 import johny.dotsville.benefit.validator.ChildrenValidator;
-import johny.dotsville.benefit.validator.CityRegisterValidator;
+import johny.dotsville.benefit.validator.register.CityRegisterValidator;
 import johny.dotsville.benefit.validator.StudentValidator;
 import johny.dotsville.benefit.validator.WeddingValidator;
 import johny.dotsville.benefit.mail.MailSender;

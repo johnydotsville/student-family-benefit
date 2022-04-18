@@ -1,4 +1,4 @@
-package johny.dotsville.benefit.validator;
+package johny.dotsville.benefit.validator.register;
 
 import johny.dotsville.benefit.domain.AnswerCityRegister;
 import johny.dotsville.benefit.domain.StudentOrder;
@@ -25,7 +25,7 @@ public class CityRegisterValidator {
             personChecker.checkPerson(studentOrder.getWife());
             personChecker.checkPerson(studentOrder.getChild());
         } catch (CityRegisterException ex) {
-            ex.printStackTrace();
+            ex.printStackTrace(System.out);
         }
 
         AnswerCityRegister answer = new AnswerCityRegister();
