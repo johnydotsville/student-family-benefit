@@ -1,4 +1,4 @@
-package johny.dotsville.benefit.validator;
+package johny.dotsville.benefit.validator.register;
 
 import johny.dotsville.benefit.domain.Person;
 import johny.dotsville.benefit.domain.register.CityRegisterResponse;
