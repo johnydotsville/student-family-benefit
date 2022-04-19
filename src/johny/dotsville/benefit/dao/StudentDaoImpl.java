@@ -8,6 +8,9 @@ import johny.dotsville.benefit.exception.DaoException;
 import java.sql.*;
 
 public class StudentDaoImpl implements StudentOrderDao {
+    public static final String INSERT_ORDER = "INSERT INTO jc_student_order(student_order_status, student_order_date, h_sur_name, h_given_name, h_patronymic, h_date_of_birth, h_passport_seria, h_passport_number, h_passport_date, h_passport_office_id, h_post_index, h_street_code, h_building, h_extension, h_apartment, w_sur_name, w_given_name, wh_patronymic, w_date_of_birth, w_passport_seria, w_passport_number, w_passport_date, w_passport_office_id, w_post_index, w_street_code, w_building, w_extension, w_apartment, certificate_id, register_office_id, marriage_date) " +
+            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+
     // TODO вынести соединение куда-нибудь в общее место
     private Connection getConnection() throws SQLException {
         String connectionString = Config.getProperty(Config.DB_URL);
@@ -20,21 +23,9 @@ public class StudentDaoImpl implements StudentOrderDao {
     @Override
     public Long saveStudentOrder(StudentOrder order) throws DaoException {
         try (Connection conn = getConnection();
-             PreparedStatement stmt = conn.prepareStatement(GET_AREA)) {
+             PreparedStatement stmt = conn.prepareStatement(INSERT_ORDER)) {
 
-            String param1 = buildParam(areaId);
-            String param2 = areaId;
-
-            stmt.setString(1, param1);
-            stmt.setString(2, param2);
-
-            ResultSet result = stmt.executeQuery();
-            while (result.next()) {
-                CountryArea area = new CountryArea(
-                        result.getString("area_id"),
-                        result.getString("area_name"));
-                areas.add(area);
-            }
+            return 1L;
         } catch (SQLException ex) {
             throw new DaoException(ex);
         }
