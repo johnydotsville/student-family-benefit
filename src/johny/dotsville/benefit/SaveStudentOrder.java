@@ -9,6 +9,7 @@ import johny.dotsville.benefit.domain.StudentOrder;
 import johny.dotsville.benefit.domain.Adult;
 import johny.dotsville.benefit.domain.Address;
 import johny.dotsville.benefit.domain.Child;
+import johny.dotsville.benefit.domain.Street;
 
 public class SaveStudentOrder {
     public static void main(String[] args) {
@@ -47,7 +48,8 @@ public class SaveStudentOrder {
         order.setMarriageDate(LocalDate.of(2016, 7, 4));
         order.setMarriageOffice("Отдел ЗАГС");
 
-        Address address = new Address("195000", "Заневский пр.", "12", "", "142");
+        Street street = new Street(1L, "First Street");
+        Address address = new Address("195000", street, "12", "", "142");
 
         // Муж
         Adult husband = new Adult("Петров", "Виктор", "Сергеевич", LocalDate.of(1997, 8, 24));
