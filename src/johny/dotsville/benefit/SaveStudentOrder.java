@@ -13,27 +13,7 @@ import johny.dotsville.benefit.domain.Street;
 
 public class SaveStudentOrder {
     public static void main(String[] args) {
-        Connection connection = null;
-        String connectionString = "jdbc:postgresql://localhost:5432/jc_student";
-        String username = "postgres";
-        String pass = "j123";
-        try
-        {
-            connection = DriverManager.getConnection(connectionString, username, pass);
-            System.out.println( "Connection established!" );
 
-
-        }
-        catch (SQLException se) {
-            se.printStackTrace();
-        }
-
-        try {
-            connection.close();
-        }
-        catch (SQLException se) {
-            se.printStackTrace();
-        }
     }
 
     static long saveStudentOrder(StudentOrder studentOrder) {
