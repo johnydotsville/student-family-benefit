@@ -11,7 +11,7 @@ public class StudentOrder {
     private List<Child> children;
     private String marriageCertificateId;
     private LocalDate marriageDate;
-    private String marriageOffice;
+    private RegisterOffice marriageOffice;
 
     public long getStudentOrderId() {
         return studentOrderId;
@@ -64,11 +64,11 @@ public class StudentOrder {
         this.marriageDate = marriageDate;
     }
 
-    public String getMarriageOffice() {
+    public RegisterOffice getMarriageOffice() {
         return marriageOffice;
     }
 
-    public void setMarriageOffice(String marriageOffice) {
+    public void setMarriageOffice(RegisterOffice marriageOffice) {
         this.marriageOffice = marriageOffice;
     }
 }
