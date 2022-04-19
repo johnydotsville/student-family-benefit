@@ -1,6 +1,9 @@
 package johny.dotsville.benefit;
 
 import java.time.LocalDate;
+import java.sql.DriverManager;
+import java.sql.Connection;
+import java.sql.SQLException;
 
 import johny.dotsville.benefit.domain.StudentOrder;
 import johny.dotsville.benefit.domain.Adult;
@@ -8,6 +11,30 @@ import johny.dotsville.benefit.domain.Address;
 import johny.dotsville.benefit.domain.Child;
 
 public class SaveStudentOrder {
+    public static void main(String[] args) {
+        Connection connection = null;
+        String connectionString = "jdbc:postgresql://localhost:5432/jc_student";
+        String username = "postgres";
+        String pass = "j123";
+        try
+        {
+            connection = DriverManager.getConnection(connectionString, username, pass);
+            System.out.println( "Connection established!" );
+
+
+        }
+        catch (SQLException se) {
+            se.printStackTrace();
+        }
+
+        try {
+            connection.close();
+        }
+        catch (SQLException se) {
+            se.printStackTrace();
+        }
+    }
+
     static long saveStudentOrder(StudentOrder studentOrder) {
         long answer = 199;
         return answer;
