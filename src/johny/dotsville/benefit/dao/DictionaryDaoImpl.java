@@ -21,6 +21,7 @@ public class DictionaryDaoImpl implements DictionaryDao {
     private static final String GET_AREA = "select * from jc_country_struct " +
             "where area_id like ? and area_id <> ?";
 
+    // TODO вынести соединение куда-нибудь в общее место
     private Connection getConnection() throws SQLException {
         String connectionString = Config.getProperty(Config.DB_URL);
         String username = Config.getProperty(Config.DB_LOGIN);
