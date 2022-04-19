@@ -8,16 +8,22 @@ import java.util.List;
 
 import johny.dotsville.benefit.dao.DictionaryDao;
 import johny.dotsville.benefit.dao.DictionaryDaoImpl;
+import johny.dotsville.benefit.dao.StudentDaoImpl;
+import johny.dotsville.benefit.dao.StudentOrderDao;
 import johny.dotsville.benefit.domain.*;
 
 public class SaveStudentOrder {
     public static void main(String[] args) throws Exception {
-        DictionaryDao dao = new DictionaryDaoImpl();
-        List<Street> streets = dao.findStreets("ица");
-        List<PassportOffice> passportOffices = dao.findPassportOffices("010020000000");
-        List<RegisterOffice> registerOffices = dao.findRegisterOffices("010010000000");
-        List<CountryArea> countryAreas = dao.findAreas("");
-        List<CountryArea> countryAreasLevel2 = dao.findAreas("010000000000");
+//        DictionaryDao dao = new DictionaryDaoImpl();
+//        List<Street> streets = dao.findStreets("ица");
+//        List<PassportOffice> passportOffices = dao.findPassportOffices("010020000000");
+//        List<RegisterOffice> registerOffices = dao.findRegisterOffices("010010000000");
+//        List<CountryArea> countryAreas = dao.findAreas("");
+//        List<CountryArea> countryAreasLevel2 = dao.findAreas("010000000000");
+        StudentOrder order = buildStudentOrder(10);
+        StudentOrderDao dao = new StudentDaoImpl();
+        long id = dao.saveStudentOrder(order);
+        System.out.println(id);
     }
 
     static long saveStudentOrder(StudentOrder studentOrder) {
