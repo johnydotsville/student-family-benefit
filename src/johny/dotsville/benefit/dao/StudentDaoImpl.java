@@ -41,50 +41,21 @@ public class StudentDaoImpl implements StudentOrderDao {
                      INSERT_ORDER,
                      new String[] {"student_order_id"})) {
             // Это массив колонок, которые нужно вернуть для вставленных записей после вставки,
-            // см. использование ниже
+            // см. использование ниже, нужно для получения id сохраненной заявки
 
             // Заголовок
             stmt.setInt(1, StudentOrderStatus.START.ordinal());
             stmt.setTimestamp(2, java.sql.Timestamp.valueOf(LocalDateTime.now()));
-            // Муж
-            Adult husband = order.getHusband();
-            stmt.setString(3, husband.getSurname());
-            stmt.setString(4, husband.getGivenName());
-            stmt.setString(5, husband.getPatronymic());
-            stmt.setDate(6, java.sql.Date.valueOf(husband.getDateOfBirth()));
-            stmt.setString(7, husband.getPassportSeria());
-            stmt.setString(8, husband.getPassportNumber());
-            stmt.setDate(9, java.sql.Date.valueOf(husband.getIssueDate()));
-            stmt.setLong(10, husband.getIssueDepartment().getOfficeId());
-            Address h_address = husband.getAddress();
-            stmt.setString(11, h_address.getPostCode());
-            stmt.setLong(12, h_address.getStreet().getStreetCode());
-            stmt.setString(13, h_address.getBuilding());
-            stmt.setString(14, h_address.getExtension());
-            stmt.setString(15, h_address.getApartment());
-            // Жена
-            Adult wife = order.getWife();
-            stmt.setString(16, wife.getSurname());
-            stmt.setString(17, wife.getGivenName());
-            stmt.setString(18, wife.getPatronymic());
-            stmt.setDate(19, java.sql.Date.valueOf(wife.getDateOfBirth()));
-            stmt.setString(20, wife.getPassportSeria());
-            stmt.setString(21, wife.getPassportNumber());
-            stmt.setDate(22, java.sql.Date.valueOf(wife.getIssueDate()));
-            stmt.setLong(23, wife.getIssueDepartment().getOfficeId());
-            Address w_address = wife.getAddress();
-            stmt.setString(24, w_address.getPostCode());
-            stmt.setLong(25, w_address.getStreet().getStreetCode());
-            stmt.setString(26, w_address.getBuilding());
-            stmt.setString(27, w_address.getExtension());
-            stmt.setString(28, w_address.getApartment());
+            // Муж и жена
+            setParamsForAdult(stmt, 3, order.getHusband());
+            setParamsForAdult(stmt, 16, order.getWife());
             // Брак
             stmt.setString(29, order.getMarriageCertificateId());
             stmt.setLong(30, order.getMarriageOffice().getOfficeId());
             stmt.setDate(31, java.sql.Date.valueOf(order.getMarriageDate()));
 
             stmt.executeUpdate();
-
+            
             ResultSet result = stmt.getGeneratedKeys();
             if (result.next()) {
                 savedOrderId = result.getLong("student_order_id");
@@ -95,5 +66,23 @@ public class StudentDaoImpl implements StudentOrderDao {
         } catch (SQLException ex) {
             throw new DaoException(ex);
         }
+    }
+
+    private void setParamsForAdult(PreparedStatement stmt, int startParamInd, Adult adult)
+            throws SQLException {
+        stmt.setString(startParamInd, adult.getSurname());
+        stmt.setString(startParamInd + 1, adult.getGivenName());
+        stmt.setString(startParamInd + 2, adult.getPatronymic());
+        stmt.setDate(startParamInd + 3, java.sql.Date.valueOf(adult.getDateOfBirth()));
+        stmt.setString(startParamInd + 4, adult.getPassportSeria());
+        stmt.setString(startParamInd + 5, adult.getPassportNumber());
+        stmt.setDate(startParamInd + 6, java.sql.Date.valueOf(adult.getIssueDate()));
+        stmt.setLong(startParamInd + 7, adult.getIssueDepartment().getOfficeId());
+        Address h_address = adult.getAddress();
+        stmt.setString(startParamInd + 8, h_address.getPostCode());
+        stmt.setLong(startParamInd + 9, h_address.getStreet().getStreetCode());
+        stmt.setString(startParamInd + 10, h_address.getBuilding());
+        stmt.setString(startParamInd + 11, h_address.getExtension());
+        stmt.setString(startParamInd + 12, h_address.getApartment());
     }
 }
