@@ -8,6 +8,9 @@ import johny.dotsville.benefit.domain.Street;
 import johny.dotsville.benefit.exception.DaoException;
 
 public class DictionaryDaoImpl implements DictionaryDao {
+    private static final String GET_STREET = "select * from jc_street " +
+        "where upper(street_name) like upper(?)";
+
     private Connection getConnection() throws SQLException {
         String connectionString = "jdbc:postgresql://localhost:5432/jc_student";
         String username = "postgres";
@@ -19,15 +22,14 @@ public class DictionaryDaoImpl implements DictionaryDao {
     public List<Street> findStreets(String pattern) throws DaoException {
         List<Street> streets = new LinkedList<>();
 
-        try {
-            Connection conn = getConnection();
 
-            String sql = "select * from jc_street " +
-                    "where upper(street_name) " +
-                    "like upper('%" + pattern + "%')";
-            Statement stmt = conn.createStatement();
 
-            ResultSet result = stmt.executeQuery(sql);
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(GET_STREET)) {
+
+            stmt.setString(1, "%" + pattern + "%");
+
+            ResultSet result = stmt.executeQuery();
             while (result.next()) {
                 Street street = new Street(result.getLong("street_code"),
                         result.getString("street_name"));
