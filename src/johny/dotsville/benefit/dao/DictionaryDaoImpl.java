@@ -4,6 +4,7 @@ import java.sql.*;
 import java.util.LinkedList;
 import java.util.List;
 
+import johny.dotsville.benefit.config.Config;
 import johny.dotsville.benefit.domain.Street;
 import johny.dotsville.benefit.exception.DaoException;
 
@@ -12,17 +13,15 @@ public class DictionaryDaoImpl implements DictionaryDao {
         "where upper(street_name) like upper(?)";
 
     private Connection getConnection() throws SQLException {
-        String connectionString = "jdbc:postgresql://localhost:5432/jc_student";
-        String username = "postgres";
-        String pass = "j123";
+        String connectionString = Config.getProperty(Config.DB_URL);
+        String username = Config.getProperty(Config.DB_LOGIN);
+        String pass = Config.getProperty(Config.DB_PASSWORD);
 
         return DriverManager.getConnection(connectionString, username, pass);
     }
 
     public List<Street> findStreets(String pattern) throws DaoException {
         List<Street> streets = new LinkedList<>();
-
-
 
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(GET_STREET)) {
