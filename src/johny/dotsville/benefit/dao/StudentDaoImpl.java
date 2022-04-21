@@ -90,12 +90,27 @@ public class StudentDaoImpl implements StudentOrderDao {
         }
     }
 
+    // TODO Возможно сделать отдельный метод с заданием размера буфера и выполнением пачки
     private void saveChildren(Connection conn, StudentOrder order, long orderId)
             throws SQLException{
         try (PreparedStatement stmt = conn.prepareStatement(INSERT_CHILD)) {
+            int batchMaxSize = 10_000;
+            int batchCurrentSize = 0;
+            // Пакетная обработка. Не сразу будем выполнять вставку, а накопим "пачку" вставок
+            // со всеми детьми разом
             for (Child child : order.getChildren()) {
                 setParamsForChild(stmt, child, orderId);
-                stmt.executeUpdate();
+                //stmt.executeUpdate();
+                // Если вдруг в пачке мб ну очень много записей, организуем "буфер"
+                stmt.addBatch();
+                batchCurrentSize++;
+                if (batchCurrentSize >= batchCurrentSize) {
+                    stmt.executeBatch();
+                    batchCurrentSize = 0;
+                }
+            }
+            if (batchCurrentSize > 0) {
+                stmt.executeBatch();
             }
         }
     }

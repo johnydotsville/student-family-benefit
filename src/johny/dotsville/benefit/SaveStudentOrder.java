@@ -15,12 +15,6 @@ import johny.dotsville.benefit.domain.*;
 // TODO класс скорее всего лучше переименовать будет
 public class SaveStudentOrder {
     public static void main(String[] args) throws Exception {
-//        DictionaryDao dao = new DictionaryDaoImpl();
-//        List<Street> streets = dao.findStreets("ица");
-//        List<PassportOffice> passportOffices = dao.findPassportOffices("010020000000");
-//        List<RegisterOffice> registerOffices = dao.findRegisterOffices("010010000000");
-//        List<CountryArea> countryAreas = dao.findAreas("");
-//        List<CountryArea> countryAreasLevel2 = dao.findAreas("010000000000");
         StudentOrder order = buildStudentOrder(10);
         StudentOrderDao dao = new StudentDaoImpl();
         long id = dao.saveStudentOrder(order);
@@ -28,6 +22,7 @@ public class SaveStudentOrder {
     }
 
     // TODO Это походу надо удалить потом, раз весь БД-движ происходит в StudentOrderDao
+    // UPD Вряд ли, скорее всего просто код сохранения из main переедет сюда в нужный момент
     static long saveStudentOrder(StudentOrder studentOrder) {
         long answer = 199;
         return answer;
