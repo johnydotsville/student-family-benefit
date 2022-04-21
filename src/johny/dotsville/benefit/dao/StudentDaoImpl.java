@@ -8,16 +8,35 @@ import java.sql.*;
 import java.time.LocalDateTime;
 
 public class StudentDaoImpl implements StudentOrderDao {
+    // TODO адский треш например, переделать
     private static final String INSERT_ORDER = "INSERT INTO jc_student_order(" +
             "student_order_status, student_order_date, " +
+
             "h_sur_name, h_given_name, h_patronymic, h_date_of_birth, " +
             "h_passport_seria, h_passport_number, h_passport_date, h_passport_office_id, " +
-            "h_post_index, h_street_code, h_building, h_extension, h_apartment, " +
+            "h_post_index, h_street_code, h_building, h_extension, h_apartment," +
+            "h_university_id, h_student_number, " +
+
             "w_sur_name, w_given_name, wh_patronymic, w_date_of_birth, " +
             "w_passport_seria, w_passport_number, w_passport_date, w_passport_office_id, " +
             "w_post_index, w_street_code, w_building, w_extension, w_apartment, " +
+            "w_university_id, w_student_number, " +
+
             "certificate_id, register_office_id, marriage_date) " +
-            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+            "VALUES (" +
+            "?, ?," +
+
+            "?, ?, ?, ?," +
+            "?, ?, ?, ?," +
+            "?, ?, ?, ?, ?," +
+            "?, ?," +
+
+            "?, ?, ?, ?," +
+            "?, ?, ?, ?," +
+            "?, ?," +
+            "?, ?, ?, ?, ?," +
+
+            "?, ?, ?);";
     private static final String INSERT_CHILD = "INSERT INTO jc_student_child(" +
             "student_order_id, " +  // 1
             "c_sur_name, " +  // 2
@@ -57,16 +76,17 @@ public class StudentDaoImpl implements StudentOrderDao {
 
             conn.setAutoCommit(false);
             try {
+                // TODO Это 3.14здец конечно такое заполнение поддерживать, нужно переделать
                 // Заголовок
                 stmt.setInt(1, StudentOrderStatus.START.ordinal());
                 stmt.setTimestamp(2, java.sql.Timestamp.valueOf(LocalDateTime.now()));
                 // Муж и жена
                 setParamsForAdult(stmt, 3, order.getHusband());
-                setParamsForAdult(stmt, 16, order.getWife());
+                setParamsForAdult(stmt, 18, order.getWife());
                 // Брак
-                stmt.setString(29, order.getMarriageCertificateId());
-                stmt.setLong(30, order.getMarriageOffice().getOfficeId());
-                stmt.setDate(31, java.sql.Date.valueOf(order.getMarriageDate()));
+                stmt.setString(33, order.getMarriageCertificateId());
+                stmt.setLong(34, order.getMarriageOffice().getOfficeId());
+                stmt.setDate(35, java.sql.Date.valueOf(order.getMarriageDate()));
 
                 stmt.executeUpdate();
 
@@ -151,5 +171,7 @@ public class StudentDaoImpl implements StudentOrderDao {
         stmt.setString(startParamInd + 10, address.getBuilding());
         stmt.setString(startParamInd + 11, address.getExtension());
         stmt.setString(startParamInd + 12, address.getApartment());
+        stmt.setLong(startParamInd + 13, adult.getUniversity().getUniversityId());
+        stmt.setString(startParamInd + 14, adult.getStudentId());
     }
 }

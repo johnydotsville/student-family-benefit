@@ -1,13 +1,7 @@
 package johny.dotsville.benefit;
 
 import java.time.LocalDate;
-import java.sql.DriverManager;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.List;
 
-import johny.dotsville.benefit.dao.DictionaryDao;
-import johny.dotsville.benefit.dao.DictionaryDaoImpl;
 import johny.dotsville.benefit.dao.StudentDaoImpl;
 import johny.dotsville.benefit.dao.StudentOrderDao;
 import johny.dotsville.benefit.domain.*;
@@ -33,7 +27,6 @@ public class SaveStudentOrder {
         order.setStudentOrderId(id);
         order.setMarriageCertificateId("" + (123456000 + id));
         order.setMarriageDate(LocalDate.of(2016, 7, 4));
-//        order.setMarriageOffice("Отдел ЗАГС");
         order.setMarriageOffice(new RegisterOffice(1L, "", ""));
 
         Street street = new Street(1L, "First Street");
@@ -44,26 +37,27 @@ public class SaveStudentOrder {
         husband.setPassportSeria("" + (1000 + id));
         husband.setPassportNumber("" + (100000 + id));
         husband.setIssueDate(LocalDate.of(2017, 9, 15));
-//        husband.setIssueDepartment("Отдел милиции №" + id);
         husband.setIssueDepartment(new PassportOffice(1L, "", ""));
         husband.setStudentId("" + (100000 + id));
         husband.setAddress(address);
+        husband.setUniversity(new University(2L, ""));
+        husband.setStudentId("HH12345");
 
         // Жена
         Adult wife = new Adult("Петрова", "Вероника", "Алекссевна", LocalDate.of(1998, 3, 12));
         wife.setPassportSeria("" + (2000 + id));
         wife.setPassportNumber("" + (200000 + id));
         wife.setIssueDate(LocalDate.of(2018, 4, 5));
-//        wife.setIssueDepartment("Отдел милиции №" + id);
         wife.setIssueDepartment(new PassportOffice(2L, "", ""));
         wife.setStudentId("" + (200000 + id));
         wife.setAddress(address);
+        wife.setUniversity(new University(1L, ""));
+        wife.setStudentId("WW12345");
 
         // Ребенок 1
         Child child1 = new Child("Петрова", "Ирина", "Викторовна", LocalDate.of(2018, 6, 29));
         child1.setCertificateNumber("" + (300000 + id));
         child1.setIssueDate(LocalDate.of(2018, 7, 19));
-//        child1.setIssueDepartment("Отдел ЗАГС №" + id);
         child1.setIssueDepartment(new RegisterOffice(2L, "", ""));
         child1.setAddress(address);
 
@@ -71,7 +65,6 @@ public class SaveStudentOrder {
         Child child2 = new Child("Петров", "Евгений", "Викторович", LocalDate.of(2018, 6, 29));
         child2.setCertificateNumber("" + (400000 + id));
         child2.setIssueDate(LocalDate.of(2018, 7, 19));
-//        child2.setIssueDepartment("Отдел ЗАГС №" + id);
         child2.setIssueDepartment(new RegisterOffice(3L, "", ""));
         child2.setAddress(address);
 
