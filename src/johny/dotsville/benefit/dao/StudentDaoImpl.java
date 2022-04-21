@@ -4,11 +4,13 @@ import johny.dotsville.benefit.domain.*;
 import johny.dotsville.benefit.config.Config;
 import johny.dotsville.benefit.exception.DaoException;
 
+import javax.xml.transform.Result;
 import java.sql.*;
+import java.sql.Date;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class StudentDaoImpl implements StudentOrderDao {
     // TODO адский треш например, переделать
@@ -65,6 +67,25 @@ public class StudentDaoImpl implements StudentOrderDao {
             "inner join jc_register_office ro on ro.r_office_id = so.register_office_id " +
             "inner join jc_passport_office po_h on po_h.p_office_id = so.h_passport_office_id " +
             "inner join jc_passport_office po_w on po_w.p_office_id = so.w_passport_office_id " +
+            "where student_order_status = ? order by student_order_date";
+    private static final String SELECT_CHILD =
+            "select soc.*, ro.r_office_area_id, ro.r_office_name " +
+            "from jc_student_child soc " +
+            "inner join jc_register_office ro on ro.r_office_id = soc.c_register_office_id " +
+            "where soc.student_order_id IN ";
+    private static final String SELECT_ORDERS_FULL =
+            "select so.*, ro.r_office_area_id, ro.r_office_name, " +
+            "po_h.p_office_area_id as h_p_office_area_id, " +
+            "po_h.p_office_name as h_p_office_name, " +
+            "po_w.p_office_area_id as w_p_office_area_id, " +
+            "po_w.p_office_name as w_p_office_name, " +
+            "soc.*, ro_c.r_office_area_id, ro_c.r_office_name " +
+            "from jc_student_order so " +
+            "inner join jc_register_office ro on ro.r_office_id = so.register_office_id " +
+            "inner join jc_passport_office po_h on po_h.p_office_id = so.h_passport_office_id " +
+            "inner join jc_passport_office po_w on po_w.p_office_id = so.w_passport_office_id " +
+            "inner join jc_student_child soc on soc.student_order_id = so.student_order_id " +
+            "inner join jc_register_office ro_c on ro_c.r_office_id = soc.c_register_office_id " +
             "where student_order_status = ? order by student_order_date";
 
     // TODO вынести соединение куда-нибудь в общее место
@@ -190,6 +211,42 @@ public class StudentDaoImpl implements StudentOrderDao {
 
     public List<StudentOrder> getStudentOrders()
             throws DaoException {
+        return getStudentOrdersWithTwoSelects();
+    }
+
+    // Получение заявок через единственный большой запрос
+    public List<StudentOrder> getStudentOrdersWithOneSelect()
+            throws DaoException {
+        List<StudentOrder> orders = new LinkedList<>();
+
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(SELECT_ORDERS_FULL)) {
+
+            stmt.setInt(1, StudentOrderStatus.START.ordinal());
+            Map<Long, StudentOrder> ordersHashMap = new HashMap<>();
+            ResultSet result = stmt.executeQuery();
+            while (result.next()){
+                Long orderId = result.getLong("student_order_id");
+                if (!ordersHashMap.containsKey(orderId)) {
+                    StudentOrder order = extractStudentOrder(result);
+                    orders.add(order);
+                    ordersHashMap.put(orderId, order);
+                }
+                StudentOrder currentOrder = ordersHashMap.get(orderId);
+                Child child = fillChild(result);
+                currentOrder.addChild(child);
+            }
+            result.close();
+        } catch (SQLException ex) {
+            throw new DaoException(ex);
+        }
+
+        return orders;
+    }
+
+    // Получения заявки через отдельное чтение заявок и детей
+    public List<StudentOrder> getStudentOrdersWithTwoSelects()
+            throws DaoException {
         List<StudentOrder> orders = new LinkedList<>();
 
         try (Connection conn = getConnection();
@@ -198,14 +255,17 @@ public class StudentDaoImpl implements StudentOrderDao {
             stmt.setInt(1, StudentOrderStatus.START.ordinal());
             ResultSet result = stmt.executeQuery();
             while (result.next()){
-                orders.add(extractStudentOrder(result));
+                StudentOrder order = extractStudentOrder(result);
+                orders.add(order);
             }
+            fillChildren(conn, orders);
             result.close();
         } catch (SQLException ex) {
             throw new DaoException(ex);
         }
 
         return orders;
+
     }
 
     private StudentOrder extractStudentOrder(ResultSet raw)
@@ -322,5 +382,55 @@ public class StudentDaoImpl implements StudentOrderDao {
         wife.setUniversity(university);
 
         order.setWife(wife);
+    }
+    private void fillChildren(Connection conn, List<StudentOrder> orders)
+            throws SQLException {
+        Map<Long, StudentOrder> ordersMap = orders.stream()
+                .collect(Collectors.toMap(o -> o.getStudentOrderId(), o -> o));
+
+        String ids = "(" + orders.stream()
+                .map(o -> String.valueOf(o.getStudentOrderId()))
+                .collect(Collectors.joining(",")) + ")";
+
+        try (PreparedStatement stmt = conn.prepareStatement(SELECT_CHILD + ids)) {
+            ResultSet result = stmt.executeQuery();
+            while (result.next()) {
+                Child child = fillChild(result);
+                ordersMap.get(result.getLong("student_order_id")).addChild(child);
+            }
+        }
+    }
+    private Child fillChild(ResultSet raw)
+            throws SQLException {
+        Child child = new Child(
+                raw.getString("c_sur_name"),
+                raw.getString("c_given_name"),
+                raw.getString("c_patronymic"),
+                raw.getDate("c_date_of_birth").toLocalDate()
+            );
+        child.setCertificateNumber(raw.getString("c_certificate_number"));
+        child.setIssueDate(raw.getDate("c_certificate_date").toLocalDate());
+
+        RegisterOffice registerOffice = new RegisterOffice(
+                raw.getLong("c_register_office_id"),
+                raw.getString("r_office_area_id"),
+                raw.getString("r_office_name")
+            );
+        child.setIssueDepartment(registerOffice);
+
+        Street street = new Street(
+                raw.getLong("c_street_code"),
+                ""
+            );
+        Address address = new Address(
+                raw.getString("c_post_index"),
+                street,
+                raw.getString("c_building"),
+                raw.getString("c_extension"),
+                raw.getString("c_apartment")
+            );
+        child.setAddress(address);
+
+        return child;
     }
 }
