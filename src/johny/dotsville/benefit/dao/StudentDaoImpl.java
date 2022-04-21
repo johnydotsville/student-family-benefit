@@ -55,9 +55,17 @@ public class StudentDaoImpl implements StudentOrderDao {
             "c_extension, " +  // 12
             "c_apartment)" +  // 13
             "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
-    private static final String SELECT_ORDERS = "select * from jc_student_order " +
-            "where student_order_status = 0 " +
-            "order by student_order_date";
+    private static final String SELECT_ORDERS =
+            "select so.*, ro.r_office_area_id, ro.r_office_name, " +
+            "po_h.p_office_area_id as h_p_office_area_id, " +
+            "po_h.p_office_name as h_p_office_name, " +
+            "po_w.p_office_area_id as w_p_office_area_id, " +
+            "po_w.p_office_name as w_p_office_name " +
+            "from jc_student_order so " +
+            "inner join jc_register_office ro on ro.r_office_id = so.register_office_id " +
+            "inner join jc_passport_office po_h on po_h.p_office_id = so.h_passport_office_id " +
+            "inner join jc_passport_office po_w on po_w.p_office_id = so.w_passport_office_id " +
+            "where student_order_status = 0 order by student_order_date";
 
     // TODO вынести соединение куда-нибудь в общее место
     private Connection getConnection() throws SQLException {
@@ -220,9 +228,12 @@ public class StudentDaoImpl implements StudentOrderDao {
             throws SQLException {
         order.setMarriageCertificateId(raw.getString("certificate_id"));
         order.setMarriageDate(raw.getDate("marriage_date").toLocalDate());
-
-        long registerOfficeId = raw.getLong("register_office_id");
-        RegisterOffice registerOffice = new RegisterOffice(registerOfficeId, "", "");
+;
+        RegisterOffice registerOffice = new RegisterOffice(
+                raw.getLong("register_office_id"),
+                raw.getString("r_office_area_id"),
+                raw.getString("r_office_name")
+            );
         order.setMarriageOffice(registerOffice);
     }
     private void fillHusband(ResultSet raw, StudentOrder order)
@@ -241,8 +252,8 @@ public class StudentDaoImpl implements StudentOrderDao {
 
         PassportOffice passportOffice = new PassportOffice(
                 raw.getLong("h_passport_office_id"),
-                "",
-                ""
+                raw.getString("h_p_office_area_id"),
+                raw.getString("h_p_office_name")
             );
         husband.setIssueDepartment(passportOffice);
 
@@ -285,8 +296,8 @@ public class StudentDaoImpl implements StudentOrderDao {
 
         PassportOffice passportOffice = new PassportOffice(
                 raw.getLong("w_passport_office_id"),
-                "",
-                ""
+                raw.getString("w_p_office_area_id"),
+                raw.getString("w_p_office_name")
             );
         wife.setIssueDepartment(passportOffice);
 
