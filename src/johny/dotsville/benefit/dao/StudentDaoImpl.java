@@ -55,26 +55,34 @@ public class StudentDaoImpl implements StudentOrderDao {
             // Это массив колонок, которые нужно вернуть для вставленных записей после вставки,
             // см. использование ниже, нужно для получения id сохраненной заявки
 
-            // Заголовок
-            stmt.setInt(1, StudentOrderStatus.START.ordinal());
-            stmt.setTimestamp(2, java.sql.Timestamp.valueOf(LocalDateTime.now()));
-            // Муж и жена
-            setParamsForAdult(stmt, 3, order.getHusband());
-            setParamsForAdult(stmt, 16, order.getWife());
-            // Брак
-            stmt.setString(29, order.getMarriageCertificateId());
-            stmt.setLong(30, order.getMarriageOffice().getOfficeId());
-            stmt.setDate(31, java.sql.Date.valueOf(order.getMarriageDate()));
+            conn.setAutoCommit(false);
+            try {
+                // Заголовок
+                stmt.setInt(1, StudentOrderStatus.START.ordinal());
+                stmt.setTimestamp(2, java.sql.Timestamp.valueOf(LocalDateTime.now()));
+                // Муж и жена
+                setParamsForAdult(stmt, 3, order.getHusband());
+                setParamsForAdult(stmt, 16, order.getWife());
+                // Брак
+                stmt.setString(29, order.getMarriageCertificateId());
+                stmt.setLong(30, order.getMarriageOffice().getOfficeId());
+                stmt.setDate(31, java.sql.Date.valueOf(order.getMarriageDate()));
 
-            stmt.executeUpdate();
+                stmt.executeUpdate();
 
-            ResultSet result = stmt.getGeneratedKeys();
-            if (result.next()) {
-                savedOrderId = result.getLong("student_order_id");
+                ResultSet result = stmt.getGeneratedKeys();
+                if (result.next()) {
+                    savedOrderId = result.getLong("student_order_id");
+                }
+                result.close();
+
+                saveChildren(conn, order, savedOrderId);
+            } catch (SQLException ex) {
+                conn.rollback();
+                throw ex;
             }
-            result.close();
 
-            saveChildren(conn, order, savedOrderId);
+            conn.commit();
 
             return savedOrderId;
         } catch (SQLException ex) {

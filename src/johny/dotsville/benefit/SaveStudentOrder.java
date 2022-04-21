@@ -12,6 +12,7 @@ import johny.dotsville.benefit.dao.StudentDaoImpl;
 import johny.dotsville.benefit.dao.StudentOrderDao;
 import johny.dotsville.benefit.domain.*;
 
+// TODO класс скорее всего лучше переименовать будет
 public class SaveStudentOrder {
     public static void main(String[] args) throws Exception {
 //        DictionaryDao dao = new DictionaryDaoImpl();
@@ -26,6 +27,7 @@ public class SaveStudentOrder {
         System.out.println(id);
     }
 
+    // TODO Это походу надо удалить потом, раз весь БД-движ происходит в StudentOrderDao
     static long saveStudentOrder(StudentOrder studentOrder) {
         long answer = 199;
         return answer;
