@@ -9,6 +9,8 @@ public abstract class Person {
     private LocalDate dateOfBirth;
     private Address address;
 
+    public Person() { }
+
     public Person(String surname, String givenName, String patronymic, LocalDate dateOfBirth) {
         this.surname = surname;
         this.givenName = givenName;

@@ -5,7 +5,10 @@ import johny.dotsville.benefit.config.Config;
 import johny.dotsville.benefit.exception.DaoException;
 
 import java.sql.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.LinkedList;
+import java.util.List;
 
 public class StudentDaoImpl implements StudentOrderDao {
     // TODO адский треш например, переделать
@@ -17,7 +20,7 @@ public class StudentDaoImpl implements StudentOrderDao {
             "h_post_index, h_street_code, h_building, h_extension, h_apartment," +
             "h_university_id, h_student_number, " +
 
-            "w_sur_name, w_given_name, wh_patronymic, w_date_of_birth, " +
+            "w_sur_name, w_given_name, w_patronymic, w_date_of_birth, " +
             "w_passport_seria, w_passport_number, w_passport_date, w_passport_office_id, " +
             "w_post_index, w_street_code, w_building, w_extension, w_apartment, " +
             "w_university_id, w_student_number, " +
@@ -52,7 +55,9 @@ public class StudentDaoImpl implements StudentOrderDao {
             "c_extension, " +  // 12
             "c_apartment)" +  // 13
             "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
-
+    private static final String SELECT_ORDERS = "select * from jc_student_order " +
+            "where student_order_status = 0 " +
+            "order by student_order_date";
 
     // TODO вынести соединение куда-нибудь в общее место
     private Connection getConnection() throws SQLException {
@@ -173,5 +178,137 @@ public class StudentDaoImpl implements StudentOrderDao {
         stmt.setString(startParamInd + 12, address.getApartment());
         stmt.setLong(startParamInd + 13, adult.getUniversity().getUniversityId());
         stmt.setString(startParamInd + 14, adult.getStudentId());
+    }
+
+    public List<StudentOrder> getStudentOrders()
+            throws DaoException {
+        List<StudentOrder> orders = new LinkedList<>();
+
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(SELECT_ORDERS)) {
+
+            ResultSet result = stmt.executeQuery();
+            while (result.next()){
+                orders.add(extractStudentOrder(result));
+            }
+            result.close();
+        } catch (SQLException ex) {
+            throw new DaoException(ex);
+        }
+
+        return orders;
+    }
+
+    private StudentOrder extractStudentOrder(ResultSet raw)
+            throws SQLException {
+        StudentOrder order = new StudentOrder();
+
+        fillHeader(raw, order);
+        fillMarriage(raw, order);
+        fillHusband(raw, order);
+        fillWife(raw, order);
+
+        return order;
+    }
+    private void fillHeader(ResultSet raw, StudentOrder order)
+            throws SQLException {
+        order.setStudentOrderId(raw.getLong("student_order_id"));
+        order.setStudentOrderDate(raw.getTimestamp("student_order_date").toLocalDateTime());
+        order.setStudentOrderStatus(StudentOrderStatus.fromValue(raw.getInt("student_order_status")));
+    }
+    private void fillMarriage(ResultSet raw, StudentOrder order)
+            throws SQLException {
+        order.setMarriageCertificateId(raw.getString("certificate_id"));
+        order.setMarriageDate(raw.getDate("marriage_date").toLocalDate());
+
+        long registerOfficeId = raw.getLong("register_office_id");
+        RegisterOffice registerOffice = new RegisterOffice(registerOfficeId, "", "");
+        order.setMarriageOffice(registerOffice);
+    }
+    private void fillHusband(ResultSet raw, StudentOrder order)
+            throws SQLException {
+        // TODO Опять 3.14здец, поправить
+        String surname = raw.getString("h_sur_name");
+        String firstname = raw.getString("h_given_name");
+        String patronymic = raw.getString("h_patronymic");
+        LocalDate birth = raw.getDate("h_date_of_birth").toLocalDate();
+
+        Adult husband = new Adult(surname, firstname, patronymic, birth);
+
+        husband.setPassportSeria(raw.getString("h_passport_seria"));
+        husband.setPassportNumber(raw.getString("h_passport_number"));
+        husband.setIssueDate(raw.getDate("h_passport_date").toLocalDate());
+
+        PassportOffice passportOffice = new PassportOffice(
+                raw.getLong("h_passport_office_id"),
+                "",
+                ""
+            );
+        husband.setIssueDepartment(passportOffice);
+
+        Street street = new Street(
+                raw.getLong("h_street_code"),
+                ""
+            );
+        Address address = new Address(
+                raw.getString("h_post_index"),
+                street,
+                raw.getString("h_building"),
+                raw.getString("h_extension"),
+                raw.getString("h_apartment")
+            );
+        husband.setAddress(address);
+
+        University university = new University(
+                raw.getLong("h_university_id"),
+                ""
+            );
+        husband.setUniversity(university);
+
+        husband.setStudentId(raw.getString("h_student_number"));
+
+        order.setHusband(husband);
+    }
+    private void fillWife(ResultSet raw, StudentOrder order)
+            throws SQLException {
+        // TODO Опять 3.14здец, поправить
+        String surname = raw.getString("w_sur_name");
+        String firstname = raw.getString("w_given_name");
+        String patronymic = raw.getString("w_patronymic");
+        LocalDate birth = raw.getDate("w_date_of_birth").toLocalDate();
+
+        Adult wife = new Adult(surname, firstname, patronymic, birth);
+
+        wife.setPassportSeria(raw.getString("w_passport_seria"));
+        wife.setPassportNumber(raw.getString("w_passport_number"));
+        wife.setIssueDate(raw.getDate("w_passport_date").toLocalDate());
+
+        PassportOffice passportOffice = new PassportOffice(
+                raw.getLong("w_passport_office_id"),
+                "",
+                ""
+            );
+        wife.setIssueDepartment(passportOffice);
+
+        Street street = new Street(
+                raw.getLong("w_street_code"),
+                ""
+            );
+        Address address = new Address(
+                raw.getString("w_post_index"),
+                street,
+                raw.getString("w_building"),
+                raw.getString("w_extension"),
+                raw.getString("w_apartment")
+            );
+        wife.setAddress(address);
+
+        University university = new University(
+                raw.getLong("w_university_id"),
+                raw.getString("w_student_number")
+            );
+        wife.setUniversity(university);
+
+        order.setWife(wife);
     }
 }

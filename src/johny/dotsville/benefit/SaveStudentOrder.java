@@ -1,6 +1,7 @@
 package johny.dotsville.benefit;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import johny.dotsville.benefit.dao.StudentDaoImpl;
 import johny.dotsville.benefit.dao.StudentOrderDao;
@@ -13,6 +14,8 @@ public class SaveStudentOrder {
         StudentOrderDao dao = new StudentDaoImpl();
         long id = dao.saveStudentOrder(order);
         System.out.println(id);
+
+        List<StudentOrder> orders = dao.getStudentOrders();
     }
 
     // TODO Это походу надо удалить потом, раз весь БД-движ происходит в StudentOrderDao

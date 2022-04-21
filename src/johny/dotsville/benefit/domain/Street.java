@@ -1,7 +1,7 @@
 package johny.dotsville.benefit.domain;
 
 public class Street {
-    private Long streetCode;
+    private long streetCode;
     private String streetName;
 
     public Street() {

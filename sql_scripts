@@ -63,7 +63,7 @@ create table jc_student_order (
 	h_student_number varchar(30) not null,
 	w_sur_name varchar(100) not null,
 	w_given_name varchar(100) not null,
-	wh_patronymic varchar(100) not null,
+	w_patronymic varchar(100) not null,
 	w_date_of_birth date not null,
 	w_passport_seria varchar(10) not null,
 	w_passport_number varchar(10) not null,

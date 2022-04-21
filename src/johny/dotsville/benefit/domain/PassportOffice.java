@@ -1,7 +1,7 @@
 package johny.dotsville.benefit.domain;
 
 public class PassportOffice {
-    private Long officeId;
+    private long officeId;
     private String officeAreaId;
     private String officeName;
 
