@@ -65,7 +65,7 @@ public class StudentDaoImpl implements StudentOrderDao {
             "inner join jc_register_office ro on ro.r_office_id = so.register_office_id " +
             "inner join jc_passport_office po_h on po_h.p_office_id = so.h_passport_office_id " +
             "inner join jc_passport_office po_w on po_w.p_office_id = so.w_passport_office_id " +
-            "where student_order_status = 0 order by student_order_date";
+            "where student_order_status = ? order by student_order_date";
 
     // TODO вынести соединение куда-нибудь в общее место
     private Connection getConnection() throws SQLException {
@@ -195,6 +195,7 @@ public class StudentDaoImpl implements StudentOrderDao {
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(SELECT_ORDERS)) {
 
+            stmt.setInt(1, StudentOrderStatus.START.ordinal());
             ResultSet result = stmt.executeQuery();
             while (result.next()){
                 orders.add(extractStudentOrder(result));
