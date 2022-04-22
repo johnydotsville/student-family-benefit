@@ -109,6 +109,9 @@ create table jc_student_child (
 	FOREIGN KEY (c_register_office_id) REFERENCES jc_register_office(r_office_id) ON DELETE RESTRICT
 );
 
+-- Индексы
+create index idx_student_order_status on jc_student_order(student_order_status)
+create index idx_child_student_order_id on jc_student_child(student_order_id)
 
 -- Тестовые данные
 INSERT INTO jc_street (street_code, street_name) VALUES
